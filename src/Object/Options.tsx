@@ -11,10 +11,11 @@ export const optGrade = [
 ];
 
 export const optTebal = [
-  { value: 0.00155, label: "1.55" },
-  { value: 0.0018, label: "1.8" },
-  { value: 0.0027, label: "2.7" },
-  { value: 0.0034, label: "3.4" },
+  { value: 0.00155, label: "1.55" , pcs: 650 },
+  { value: 0.0018, label: "1.8" , pcs: 560 },
+  { value: 0.0025, label: "2.5" , pcs: 400 },
+  { value: 0.0027, label: "2.7" , pcs: 380 },
+  { value: 0.0034, label: "3.4" , pcs: 300 },
 ];
 
 export const optUkuran = [

@@ -4,16 +4,16 @@ export const init = {
       id: "a51b9d6b-014c-4146-8a7a-ee1ad5182d2b",
       jenis: "PPC",
       grade: "R",
-      tebal: 0,
-      ukuran: 0,
+      tebal: { value: 0, label: "", pcs: 0 },
+      ukuran: { value: 0, label: "" },
       stockcard: "",
       jmlbahan: 0,
-      asalLuar: ''
+      asalLuar: '',
+      mc1: 0,
+      mc2: 0,
+      kubikasi: 0,
     },
   ],
-  mc1: 0,
-  mc2: 0,
-  kubikkasi: 0,
   mesin: "",
 };
 
