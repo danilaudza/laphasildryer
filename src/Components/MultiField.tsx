@@ -150,7 +150,7 @@ const MultiField = ({ sendData, mesin }) => {
             className="border-2 rounded-md px-3 py-2 focus:outline-blue-600 mb-4"
             placeholder={"Jumlah Bahan di " + mesin}
             onChange={(e) =>
-              handleSelect(inputField.id, e.target.value, "jmlbahan")
+              handleSelect(inputField.id, parseInt(e.target.value), "jmlbahan")
             }
             value={inputField.jmlbahan}
           />
@@ -162,7 +162,7 @@ const MultiField = ({ sendData, mesin }) => {
                 className="border-2 rounded-md px-3 py-2 focus:outline-blue-600 mb-4 w-full"
                 placeholder="Mc1"
                 onChange={(e) =>
-                  handleSelect(inputField.id, e.target.value, "mc1")
+                  handleSelect(inputField.id, parseInt(e.target.value), "mc1")
                 }
                 value={inputField.mc1}
               ></input>
@@ -174,7 +174,7 @@ const MultiField = ({ sendData, mesin }) => {
                 placeholder="Mc2"
                 className="border-2 rounded-md px-3 py-2 focus:outline-blue-600 mb-4 w-full"
                 onChange={(e) =>
-                  handleSelect(inputField.id, e.target.value, "mc2")
+                  handleSelect(inputField.id, parseInt(e.target.value), "mc2")
                 }
                 value={inputField.mc2}
               ></input>
@@ -187,7 +187,7 @@ const MultiField = ({ sendData, mesin }) => {
             <input
               className="border-2 rounded-md px-3 py-2 focus:outline-blue-600 mb-4 w-1/2"
               onChange={(e) =>
-                handleSelect(inputField.id, e.target.value, "kubikasi")
+                handleSelect(inputField.id, parseInt(e.target.value), "kubikasi")
               }
               value={inputField.kubikasi}
               disabled

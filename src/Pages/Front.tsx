@@ -18,6 +18,7 @@ const Front = () => {
     nosetting: "",
     total: 0,
     krat: 0,
+    sisa: 0,
     keterangan: "",
     mesin: [data1, data2, data3, data4],
   });
@@ -75,10 +76,10 @@ const Front = () => {
       return 0;
     });
     arr.push(`*Jumlah Total*`);
-    arr.push(`*Krat Total*  : _${data.krat} Krat_`);
-    arr.push(`*Kubikasi Total* : _${data.total.toFixed(2)}_ m³`);
-    arr.push(`*Non Setting*     : _${data.nosetting}_`);
-    arr.push(`*Setting*              : _${data.setting}_`);
+    arr.push(`*Krat Total*  : _${data.krat} Krat + ${data.sisa}_`);
+    arr.push(`*Kubikasi Total*  : _${data.total.toFixed(2)}_ m³`);
+    arr.push(`*Non Setting*  : _${data.nosetting}_`);
+    arr.push(`*Setting*  : _${data.setting}_`);
     arr.push(`*Keterangan* :\n${data.keterangan}`);
     return arr;
   };
@@ -95,15 +96,18 @@ const Front = () => {
 
   const getKrat = () => {
     let krat = 0;
+    let sisa = 0
     Object.entries(data.mesin).map(([key, mesin]) =>
       Object.entries(mesin.inputFields).map(([key2, values]) => {
         if (values.jenis === "OPC") {
+          console.log()
           krat += Math.floor(values.jmlbahan / values.tebal["pcs"]);
+          sisa += values.jmlbahan % values.tebal["pcs"]
         }
         return 0;
       })
     );
-    return krat;
+    return [krat,sisa];
   };
 
   const getSetting = (st: number, nst: number) => {
@@ -129,7 +133,8 @@ const Front = () => {
       grup: grup,
       mesin: [data1, data2, data3, data4],
       total: getKubikasi(),
-      krat: getKrat(),
+      krat: getKrat()[0],
+      sisa: getKrat()[1],
       setting: settings[0],
       nosetting: settings[1],
       keterangan: keterangan,

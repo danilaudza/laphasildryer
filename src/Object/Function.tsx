@@ -14,5 +14,6 @@ export const copyToClipboard = (e, text, data) => {
   //   });
 
   copy(text().join("\n"));
+  console.log(data)
   alert(`Sudah di copy 👏`);
 };

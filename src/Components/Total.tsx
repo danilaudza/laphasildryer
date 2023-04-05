@@ -5,9 +5,11 @@ const Total = ({ getKubikasi, getSetting, getKeterangan, getKrat }) => {
   const [nonSetting, setNonSetting] = useState<number>(null);
   const [keterangan, setKeterangan] = useState<string>("");
 
+  const [krat,sisa] = getKrat()
   useEffect(() => {
     getSetting(setting, nonSetting);
     getKeterangan(keterangan);
+    console.log(krat)
   }, [setting, nonSetting, keterangan]);
 
   return (
@@ -26,7 +28,7 @@ const Total = ({ getKubikasi, getSetting, getKeterangan, getKrat }) => {
         className="border-2 rounded-md px-3 py-2 focus:outline-blue-600 mb-2"
         placeholder="Total m3"
         disabled
-        value={getKrat()}
+        value={krat}
       />
       <label className="mb-1">Setting</label>
       <input
