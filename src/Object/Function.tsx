@@ -14,17 +14,18 @@ export const copyToClipboard = (e, text, data) => {
   //   });
 
   copy(text().join("\n"));
-  console.log(data)
+  
   alert(`Sudah di copy 👏`);
 };
 
 export const resultJumlahTotal = (res, optKrat) => {
+  
   res.forEach((input) => {
     let pcsValue = null;
 
     optKrat.forEach((opt) => {
-      if (opt.tebal === input["tebal"] && opt.ukuran === input["ukuran"]) {
-        pcsValue = opt.pcs;
+      if (opt["tebal"] === input["tebal"] && opt["ukuran"] === input["ukuran"]) {
+        pcsValue = opt["pcs"];
         input["pcs"] = pcsValue;
       }
     });

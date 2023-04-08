@@ -122,7 +122,7 @@ const Front = () => {
     Object.entries(data.mesin).map(([key, mesin]) =>
       Object.entries(mesin.inputFields).map(([key2, values]) => {
         if (values.jenis === "OPC") {
-          console.log();
+
           krat += Math.floor(values.jmlbahan / values.tebal["pcs"]);
           sisa += values.jmlbahan % values.tebal["pcs"];
         }
@@ -175,9 +175,9 @@ const Front = () => {
 
   useEffect(() => {
     const opcArr = getJumlahTotal();
-    let res = mergingData(opcArr);
-    resultJumlahTotal(res, optKrat);
-    setRes(res);
+    let dataKrat = mergingData(opcArr);
+    resultJumlahTotal(dataKrat, optKrat);
+    setRes(dataKrat);
 
     setData({
       ...data,
