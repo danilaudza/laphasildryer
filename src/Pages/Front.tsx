@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
 import Select from "react-select";
-import Test from "../Components/Test";
+import MultiField from "../Components/MultiField";
 import Total from "../Components/Total";
 import { init, days, monthNames } from "../Object/initial";
-import { copyToClipboard } from "../Object/Function";
-import { optGrup } from "../Object/Options";
+import {
+  copyToClipboard,
+  mergingData,
+  resultJumlahTotal,
+} from "../Object/Function";
+import { optGrup, optKrat } from "../Object/Options";
 
 const Front = () => {
   const [data1, setData1] = useState(init);
@@ -13,16 +17,20 @@ const Front = () => {
   const [data4, setData4] = useState(init);
   const [data, setData] = useState({
     tgl: "",
+    grup: "",
     setting: "",
     nosetting: "",
     total: 0,
+    krat: 0,
+    sisa: 0,
     keterangan: "",
     mesin: [data1, data2, data3, data4],
   });
   const [settings, setSettings] = useState(["", ""]);
   const [keterangan, setKeterangan] = useState("");
   const [tanggal, setTanggal] = useState({});
-  const [grup, setGrup] = useState("")
+  const [grup, setGrup] = useState("");
+  const [res, setRes] = useState([]);
 
   const sendData1 = (item) => {
     setData1(item);
@@ -37,54 +45,115 @@ const Front = () => {
     setData4(item);
   };
 
+  const text = () => {
+    let arr = [];
+    arr.push(`Laporan Hasil Dryer`);
+    arr.push(`  Grup _*${grup}*_`);
+    arr.push(
+      `Hari ${tanggal["day"]} ${tanggal["date"]} ${tanggal["month"]} ${tanggal["year"]}\n`
+    );
+
+    let totalBahan = 0;
+
+    Object.entries(data.mesin).map(([key, mesin]) => {
+      arr.push(`*${mesin.mesin}*\n`);
+
+      Object.entries(mesin.inputFields).map(([key2, values]) => {
+        if (values.stockcard.length != 0) {
+          if (values.stockcard.startsWith("L")) {
+            arr.push(
+              `Bahan  : ${values.jenis} ${values.grade} ${values.tebal["label"]} (${values.ukuran["label"]}) Luar ${values.asalLuar}`
+            );
+          } else {
+            arr.push(
+              `Bahan  : ${values.jenis} ${values.grade} ${values.tebal["label"]} (${values.ukuran["label"]}) Rotary`
+            );
+          }
+        } else {
+          arr.push(`Bahan  : `);
+        }
+
+        arr.push(`StockCard  : ${values.stockcard}`);
+        arr.push(`Jumlah Bahan  : ${values.jmlbahan}`);
+        arr.push(`Mc1  : ${values.mc1}`);
+        arr.push(`Mc2  : ${values.mc2}`);
+        arr.push(`Kubikasi : ${values.kubikasi.toFixed(2)} m³\n`);
+
+        totalBahan += values.jmlbahan;
+
+        return 0;
+      });
+
+      return 0;
+    });
+
+    arr.push(`*Jumlah Total* :`);
+    res.forEach((x) => {
+      arr.push(`  ${x["jenis"]} ${x["tebal"]} _${x["jmlbahan"]}_ Pcs`);
+    });
+    arr.push(`*Krat Total*  :`);
+    res.forEach((x) => {
+      arr.push(
+        `  ${x["jenis"]} ${x["tebal"]} ${Math.floor(
+          x["jmlbahan"] / x["pcs"]
+        )} Krat + ${x["jmlbahan"] % x["pcs"]}`
+      );
+    });
+    arr.push(`*Kubikasi Total*  : _${data.total.toFixed(2)}_ m³`);
+    arr.push(`*Non Setting*  : _${data.nosetting}_`);
+    arr.push(`*Setting*  : _${data.setting}_`);
+    arr.push(`*Keterangan* :\n${data.keterangan}`);
+    return arr;
+  };
+
   const getKubikasi = () => {
     let kubikTotal = 0;
-    Object.entries(data.mesin).map(([key, mesin]) => {
-      kubikTotal += mesin.kubikkasi;
-    });
+    Object.entries(data.mesin).map(([key, mesin]) =>
+      Object.entries(mesin.inputFields).map(
+        ([key2, values]) => (kubikTotal += values.kubikasi)
+      )
+    );
     return kubikTotal;
   };
 
-  const text = () => {
-    let arr = [];
-    arr.push(`Laporan Hasil Dryer Grup ${grup} Hari ${tanggal["day"]} ${tanggal["date"]} ${tanggal["month"]} ${tanggal["year"]}\n`);
-    Object.entries(data.mesin).map(([key, mesin]) => {
-      arr.push(`${mesin.mesin}\n`);
-      let txt = []
-      let stc = []
+  const getKrat = () => {
+    let krat = 0;
+    let sisa = 0;
+    Object.entries(data.mesin).map(([key, mesin]) =>
       Object.entries(mesin.inputFields).map(([key2, values]) => {
-        if (values.stockcard.startsWith('L')){
-          txt.push(`${values.jenis} ${values.grade} ${values.tebal["label"]} (${values.ukuran["label"]}) Luar ${values.asalLuar}`)
-        } else{
-          txt.push(`${values.jenis} ${values.grade} ${values.tebal["label"]} (${values.ukuran["label"]}) Rotary`)
+        if (values.jenis === "OPC") {
+
+          krat += Math.floor(values.jmlbahan / values.tebal["pcs"]);
+          sisa += values.jmlbahan % values.tebal["pcs"];
         }
-        console.log(txt)
-        // arr.push(`Jenis                  : ${values.jenis}`);
-        // console.log(values.grade);
-        // arr.push(`Grade                 : ${values.grade}`);
-        // console.log(values.jmlbahan);
-        // arr.push(`Jumlah Bahan : ${values.jmlbahan}`);
-        // console.log(values.stockcard);
-        // arr.push(`StockCard         : ${values.stockcard}`);
-        stc.push(`${values.stockcard}`)
-        console.log(stc)
-        // console.log(values.tebal);
-        // arr.push(`Tebal                  : ${values.tebal["label"]}`);
-        // console.log(values.ukuran);
-        // arr.push(`Ukuran               : ${values.ukuran["label"]}\n`);
+        return 0;
+      })
+    );
+    return [krat, sisa];
+  };
+
+  const getJumlahTotal = () => {
+    let opcArr = [];
+    Object.entries(data.mesin).map(([key, mesin]) => {
+      Object.entries(mesin.inputFields).map(([key2, values]) => {
+        if (values.jenis === "OPC") {
+          let col = [
+            values.tebal["label"],
+            values.jmlbahan,
+            values.ukuran["label"],
+          ];
+          let appendee = {
+            jenis: "OPC",
+            tebal: col[0],
+            jmlbahan: col[1],
+            ukuran: col[2],
+            pcs: 0,
+          };
+          opcArr.push(appendee);
+        }
       });
-      arr.push(`Jenis Bahan : ${txt.join(' / ')}`)
-      arr.push(`StockCard     : ${stc.join(' / ')}`)
-      arr.push(`Mc1         : ${mesin.mc1}`);
-      arr.push(`Mc2         : ${mesin.mc2}`);
-      arr.push(`Kubikasi : ${mesin.kubikkasi.toFixed(2)} m³\n`);
-      // console.log(kubikTotal)
     });
-    arr.push(`Kubikasi Total : ${data.total.toFixed(2)} m³`);
-    arr.push(`Non Setting     : ${data.nosetting}`);
-    arr.push(`Setting              : ${data.setting}`);
-    arr.push(`Keterangan :\n${data.keterangan}`);
-    return arr;
+    return opcArr;
   };
 
   const getSetting = (st: number, nst: number) => {
@@ -94,7 +163,10 @@ const Front = () => {
     all = st + nst;
     set = (st / all) * 100;
     noset = (nst / all) * 100;
-    setSettings([`${st} (${set.toFixed(2)}%)`, `${nst} (${noset.toFixed(2)}%)`]);
+    setSettings([
+      `${st} (${set.toFixed(2)}%)`,
+      `${nst} (${noset.toFixed(2)}%)`,
+    ]);
   };
 
   const getKeterangan = (ket) => {
@@ -102,15 +174,23 @@ const Front = () => {
   };
 
   useEffect(() => {
+    const opcArr = getJumlahTotal();
+    let dataKrat = mergingData(opcArr);
+    resultJumlahTotal(dataKrat, optKrat);
+    setRes(dataKrat);
+
     setData({
       ...data,
+      grup: grup,
       mesin: [data1, data2, data3, data4],
       total: getKubikasi(),
+      krat: getKrat()[0],
+      sisa: getKrat()[1],
       setting: settings[0],
       nosetting: settings[1],
       keterangan: keterangan,
     });
-  }, [data1, data2, data3, data4, settings, keterangan]);
+  }, [data1, data2, data3, data4, settings, keterangan, grup]);
 
   useEffect(() => {
     let date = new Date();
@@ -137,26 +217,29 @@ const Front = () => {
 
   return (
     <div className="container mx-auto">
-      <div className="text-center font-bold text-4xl my-5">Laporan Hasil Dryer</div>
+      <div className="text-center font-bold text-4xl my-5">
+        Laporan Hasil Dryer
+      </div>
       <Select
-            isSearchable={false}
-            placeholder={"Grup"}
-            className="mb-4 mx-5"
-            onChange={(e) => setGrup(e.value)}
-            options={optGrup}
-          />
-      <Test sendData={sendData1} mesin="Mesin 1"></Test>
-      <Test sendData={sendData2} mesin="Mesin 2"></Test>
-      <Test sendData={sendData3} mesin="Mesin 3"></Test>
-      <Test sendData={sendData4} mesin="Mesin 4"></Test>
+        isSearchable={false}
+        placeholder={"Grup"}
+        className="mb-4 mx-5"
+        onChange={(e) => setGrup(e.value)}
+        options={optGrup}
+      />
+      <MultiField sendData={sendData1} mesin="Mesin 1"></MultiField>
+      <MultiField sendData={sendData2} mesin="Mesin 2"></MultiField>
+      <MultiField sendData={sendData3} mesin="Mesin 3"></MultiField>
+      <MultiField sendData={sendData4} mesin="Mesin 4"></MultiField>
       <Total
         getKubikasi={getKubikasi}
         getSetting={getSetting}
         getKeterangan={getKeterangan}
+        res={res}
       ></Total>
       <button
-        className="flex bg-blue-600 px-4 py-2 text-white  font-bold mx-auto rounded-md mb-12"
-        onClick={e => copyToClipboard(e,text)}
+        className="flex bg-blue-600 px-4 py-2 text-white font-bold mx-auto rounded-md mb-12"
+        onClick={(e) => copyToClipboard(e, text, data)}
       >
         Copy to Clipboard
       </button>

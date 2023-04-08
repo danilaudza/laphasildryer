@@ -6,13 +6,13 @@ import NotFound from "./Components/NotFound";
 const App = () => {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/">
-          <Route index element={<Front />} />
-        </Route>
+        <Routes>
+          <Route path="/">
+            <Route index element={<Front />} />
+          </Route>
 
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+          <Route path="*" element={<NotFound />} />
+        </Routes>
     </BrowserRouter>
   );
 };
