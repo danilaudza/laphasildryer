@@ -17,3 +17,27 @@ export const copyToClipboard = (e, text, data) => {
   console.log(data)
   alert(`Sudah di copy 👏`);
 };
+
+export const resultJumlahTotal = (res, optKrat) => {
+  res.forEach((input) => {
+    let pcsValue = null;
+
+    optKrat.forEach((opt) => {
+      if (opt.tebal === input["tebal"] && opt.ukuran === input["ukuran"]) {
+        pcsValue = opt.pcs;
+        input["pcs"] = pcsValue;
+      }
+    });
+  });
+}
+
+export const mergingData = (opcArr) => {
+  let res = Object.values(
+    opcArr.reduce((acc, { jmlbahan, ...r }) => {
+      let key = Object.entries(r).join("-");
+      acc[key] = acc[key] || { ...r, jmlbahan: 0 };
+      return (acc[key].jmlbahan += jmlbahan), acc;
+    }, {})
+  );
+  return res
+}

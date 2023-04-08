@@ -12,10 +12,10 @@ const MultiField = ({ sendData, mesin }) => {
       tebal: { value: 0, label: "", pcs: 0 },
       ukuran: { value: 0, label: "" },
       stockcard: "",
-      jmlbahan: 0,
+      jmlbahan: null,
       asalLuar: "",
-      mc1: 0,
-      mc2: 0,
+      mc1: null,
+      mc2: null,
       kubikasi: 0,
     },
   ]);
@@ -52,10 +52,10 @@ const MultiField = ({ sendData, mesin }) => {
         tebal: { value: 0, label: "", pcs: 0 },
         ukuran: { value: 0, label: "" },
         stockcard: "",
-        jmlbahan: 0,
+        jmlbahan: null,
         asalLuar: "",
-        mc1: 0,
-        mc2: 0,
+        mc1: null,
+        mc2: null,
         kubikasi: 0,
       },
     ]);
@@ -152,7 +152,7 @@ const MultiField = ({ sendData, mesin }) => {
             onChange={(e) =>
               handleSelect(inputField.id, parseInt(e.target.value), "jmlbahan")
             }
-            value={inputField.jmlbahan}
+            value={inputField.jmlbahan || ''}
           />
           <div className="flex flex-row gap-4">
             <div className="w-full lg:w-1/4">
@@ -164,7 +164,7 @@ const MultiField = ({ sendData, mesin }) => {
                 onChange={(e) =>
                   handleSelect(inputField.id, parseInt(e.target.value), "mc1")
                 }
-                value={inputField.mc1}
+                value={inputField.mc1 || ''}
               ></input>
             </div>
             <div className="w-full lg:w-1/4">
@@ -176,7 +176,7 @@ const MultiField = ({ sendData, mesin }) => {
                 onChange={(e) =>
                   handleSelect(inputField.id, parseInt(e.target.value), "mc2")
                 }
-                value={inputField.mc2}
+                value={inputField.mc2 || ''}
               ></input>
             </div>
           </div>

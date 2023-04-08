@@ -29,3 +29,19 @@ export const optGrup = [
   { value: "B", label: "B" },
   { value: "C", label: "C" },
 ];
+
+export const optKrat = [
+  { ukuran: "2x4", tebal: "1.55", pcs: 650},
+  { ukuran: "2x4", label: "1.8" , pcs: 560 },
+  { ukuran: "2x4", label: "2.5" , pcs: 400 },
+  { ukuran: "2x4", label: "2.7" , pcs: 380 },
+  { ukuran: "2x4", label: "3.4" , pcs: 300 },
+  
+  { ukuran: "4x4", tebal: "1.55", pcs: 650},
+  { ukuran: "4x4", label: "1.8" , pcs: 560 },
+  { ukuran: "4x4", label: "2.5" , pcs: 400 },
+  { ukuran: "4x4", label: "2.7" , pcs: 380 },
+  { ukuran: "4x4", label: "3.4" , pcs: 300 },
+
+  { ukuran: "4x8", label: "2.7" , pcs: 250 },
+]

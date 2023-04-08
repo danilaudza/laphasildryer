@@ -3,8 +3,12 @@ import Select from "react-select";
 import MultiField from "../Components/MultiField";
 import Total from "../Components/Total";
 import { init, days, monthNames } from "../Object/initial";
-import { copyToClipboard } from "../Object/Function";
-import { optGrup } from "../Object/Options";
+import {
+  copyToClipboard,
+  mergingData,
+  resultJumlahTotal,
+} from "../Object/Function";
+import { optGrup, optKrat } from "../Object/Options";
 
 const Front = () => {
   const [data1, setData1] = useState(init);
@@ -26,6 +30,7 @@ const Front = () => {
   const [keterangan, setKeterangan] = useState("");
   const [tanggal, setTanggal] = useState({});
   const [grup, setGrup] = useState("");
+  const [res, setRes] = useState([]);
 
   const sendData1 = (item) => {
     setData1(item);
@@ -47,11 +52,14 @@ const Front = () => {
     arr.push(
       `Hari ${tanggal["day"]} ${tanggal["date"]} ${tanggal["month"]} ${tanggal["year"]}\n`
     );
+
+    let totalBahan = 0;
+
     Object.entries(data.mesin).map(([key, mesin]) => {
       arr.push(`*${mesin.mesin}*\n`);
 
       Object.entries(mesin.inputFields).map(([key2, values]) => {
-        if (values.stockcard.length != 0){
+        if (values.stockcard.length != 0) {
           if (values.stockcard.startsWith("L")) {
             arr.push(
               `Bahan  : ${values.jenis} ${values.grade} ${values.tebal["label"]} (${values.ukuran["label"]}) Luar ${values.asalLuar}`
@@ -61,22 +69,36 @@ const Front = () => {
               `Bahan  : ${values.jenis} ${values.grade} ${values.tebal["label"]} (${values.ukuran["label"]}) Rotary`
             );
           }
-        }else{
-          arr.push(
-            `Bahan  : `
-          )
+        } else {
+          arr.push(`Bahan  : `);
         }
+
         arr.push(`StockCard  : ${values.stockcard}`);
         arr.push(`Jumlah Bahan  : ${values.jmlbahan}`);
         arr.push(`Mc1  : ${values.mc1}`);
         arr.push(`Mc2  : ${values.mc2}`);
         arr.push(`Kubikasi : ${values.kubikasi.toFixed(2)} m³\n`);
+
+        totalBahan += values.jmlbahan;
+
         return 0;
       });
+
       return 0;
     });
-    arr.push(`*Jumlah Total*`);
-    arr.push(`*Krat Total*  : _${data.krat} Krat + ${data.sisa}_`);
+
+    arr.push(`*Jumlah Total* :`);
+    res.forEach((x) => {
+      arr.push(`  ${x["jenis"]} ${x["tebal"]} _${x["jmlbahan"]}_ Pcs`);
+    });
+    arr.push(`*Krat Total*  :`);
+    res.forEach((x) => {
+      arr.push(
+        `  ${x["jenis"]} ${x["tebal"]} ${Math.floor(
+          x["jmlbahan"] / x["pcs"]
+        )} Krat + ${x["jmlbahan"] % x["pcs"]}`
+      );
+    });
     arr.push(`*Kubikasi Total*  : _${data.total.toFixed(2)}_ m³`);
     arr.push(`*Non Setting*  : _${data.nosetting}_`);
     arr.push(`*Setting*  : _${data.setting}_`);
@@ -96,18 +118,42 @@ const Front = () => {
 
   const getKrat = () => {
     let krat = 0;
-    let sisa = 0
+    let sisa = 0;
     Object.entries(data.mesin).map(([key, mesin]) =>
       Object.entries(mesin.inputFields).map(([key2, values]) => {
         if (values.jenis === "OPC") {
-          console.log()
+          console.log();
           krat += Math.floor(values.jmlbahan / values.tebal["pcs"]);
-          sisa += values.jmlbahan % values.tebal["pcs"]
+          sisa += values.jmlbahan % values.tebal["pcs"];
         }
         return 0;
       })
     );
-    return [krat,sisa];
+    return [krat, sisa];
+  };
+
+  const getJumlahTotal = () => {
+    let opcArr = [];
+    Object.entries(data.mesin).map(([key, mesin]) => {
+      Object.entries(mesin.inputFields).map(([key2, values]) => {
+        if (values.jenis === "OPC") {
+          let col = [
+            values.tebal["label"],
+            values.jmlbahan,
+            values.ukuran["label"],
+          ];
+          let appendee = {
+            jenis: "OPC",
+            tebal: col[0],
+            jmlbahan: col[1],
+            ukuran: col[2],
+            pcs: 0,
+          };
+          opcArr.push(appendee);
+        }
+      });
+    });
+    return opcArr;
   };
 
   const getSetting = (st: number, nst: number) => {
@@ -128,6 +174,11 @@ const Front = () => {
   };
 
   useEffect(() => {
+    const opcArr = getJumlahTotal();
+    let res = mergingData(opcArr);
+    resultJumlahTotal(res, optKrat);
+    setRes(res);
+
     setData({
       ...data,
       grup: grup,
@@ -184,7 +235,7 @@ const Front = () => {
         getKubikasi={getKubikasi}
         getSetting={getSetting}
         getKeterangan={getKeterangan}
-        getKrat={getKrat}
+        res={res}
       ></Total>
       <button
         className="flex bg-blue-600 px-4 py-2 text-white font-bold mx-auto rounded-md mb-12"
