@@ -9,14 +9,16 @@ export const copyToClipboard = (e, text, data) => {
     'msg' : `Grup ${grup} sedang mengisi data.`
   }
   axios
+
     .post("https://api.danilaudza.com/sendReport", jsonData)
+
     .then(function (response) {
       console.log(response);
     })
     .catch(function (error) {
       console.log(error);
     });
-  console.log(data)
+
   copy(text().join("\n"));
   
   alert(`Sudah di copy 👏`);
