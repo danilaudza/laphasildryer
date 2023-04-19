@@ -9,7 +9,9 @@ export const copyToClipboard = (e, text, data) => {
     'msg' : `Grup ${grup} sedang mengisi data.`
   }
   axios
-    .post("http://127.0.0.1:5000/sendReport", jsonData)
+
+    .post("https://api.danilaudza.com/sendReport", jsonData)
+
     .then(function (response) {
       console.log(response);
     })
