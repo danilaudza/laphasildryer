@@ -100,8 +100,8 @@ const Front = () => {
       );
     });
     arr.push(`*Kubikasi Total*  : _${data.total.toFixed(2)}_ m³`);
-    arr.push(`*Non Setting*  : _${data.nosetting}_`);
-    arr.push(`*Setting*  : _${data.setting}_`);
+    arr.push(`*Non Setting* (Siap Pakai)  : _${data.nosetting}_`);
+    arr.push(`*Setting* (Perlu Repair) : _${data.setting}_`);
     arr.push(`*Keterangan* :\n${data.keterangan}`);
     return arr;
   };
